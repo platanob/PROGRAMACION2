@@ -13,21 +13,31 @@ class producto:
     masa:str
     peso:float
 
+
+    def quitarpeso(self,menos):
+        self.peso -= menos
+
+
 @dataclass
 class contenedor:
-    carga:str
     masa : str
-    peso:int
     tipo:str
     tamano:str
-    lista_productos : list = []
-    capacidad=0
+    peso :float = 0
+    tipo_carga :str = ''
+    lista_productos = []
+    capacidad: float = 0 
+
+
     def imprimir(self):
         print("su tipo de carga es : " , self.tipo_carga)
-        print("su carga es : ", self.carga)
         print("su masa es : ",self.masa)
         print("su tamaño es : " ,self.peso)
         print("su tipo es : " , self.tipo)
+        print("su tipo es : " , self.lista_productos)
+        print('su capacidad es de : ',self.capacidad)
+
+
     def tiene_espacio(self):
         if self.capacidad > 0 :
             return True
@@ -35,36 +45,42 @@ class contenedor:
             return False
 
 
+    def con_producto(self,producto):
+        self.lista_productos.append(producto)
+        self.capacidad -= producto.peso
+        self.peso += producto.peso
+
 
 
 
 
 class contenedor_normal(contenedor):
-    tipo_carga = "normal"
+    tipo_carga:str = "normal"
 
-    def __post_init__(self):
+    def tamano_contenedor(self):
         if self.tamano == "grande":
-            capacidad=24
+            self.capacidad=24
         elif self.tamano == "pequeño":
-            capacidad=12  
+            self.capacidad=12  
 
 
 class contenedor_refrigerado(contenedor):
-    tipo_carga="refrigerada"
+    tipo_carga:str="refrigerada"
 
-    if self.tamano == "grande":
-        capacidad=20
-    elif self.tamano == "pequeño":
-        capacidad=10  
-
+    def tamano_contenedor(self):
+        if self.tamano == "grande":
+            self.capacidad=20
+        elif self.tamano == "pequeño":
+            self.capacidad
 
 class contenedor_inflamable(contenedor):
-    tipo_carga="inflamable"
+    tipo_carga:str="inflamable"
 
-    if self.tamano == "grande":
-        capacidad=22
-    elif self.tamano == "pequeño":
-        capacidad=11  
+    def tamano_contenedor(self):
+        if self.tamano == "grande":
+            capacidad=22
+        elif self.tamano == "pequeño":
+            capacidad=11  
 
 
 
@@ -98,7 +114,22 @@ def meter_productos(productos):
     lista_contenedores=[]
     for producto in productos:
         if producto.tipo=="normal":
-            contenedor_normal
+            if len(lista_contenedores)==0:
+                if producto.peso <= 12 :
+                    conte_momentanio = contenedor_normal(producto.masa,producto.tipo,"pequeño")
+                    conte_momentanio.tamano_contenedor()
+                    conte_momentanio.con_producto(producto)
+                    lista_contenedores.append(conte_momentanio)
+                elif producto.peso >= 24 :
+                    conte_momentanio = contenedor_normal(producto.masa,producto.tipo,"grande")
+                    conte_momentanio.con_producto(producto)
+                    lista_contenedores.append(conte_momentanio)
+                elif producto.peso > 24 :
+                    conte_momentanio = contenedor_normal(producto.masa,producto.tipo,"grande")
+                    conte_momentanio.con_producto(producto)
+                    lista_contenedores.append(conte_momentanio)
+
+    return lista_contenedores
 
 
 
@@ -110,9 +141,7 @@ def meter_productos(productos):
 
 
 
-
-
-productos =datos("ejemplo_lista.csv")
+"""productos =datos("ejemplo_lista.csv")
 
 
 lista_productos=[]
@@ -128,4 +157,12 @@ meter_productos(lista_productos)
 
 
 a = contenedor_inflamable("normal","solida",23,"hiku")
-a.imprimir()
+a.imprimir()"""
+
+j = producto(2, 'papas', 'normal', 'solido', 7)
+k = producto(6, 'berengena', 'normal', 'solido', 5)
+kl = []
+kl.append(j)
+kl.append(k)
+ol = meter_productos(kl)
+print(ol[0].lista_productos)
