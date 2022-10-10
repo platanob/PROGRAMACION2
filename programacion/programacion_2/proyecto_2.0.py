@@ -20,6 +20,7 @@ class contenedor:
     peso:int
     tipo:str
     tamano:str
+    lista_productos : list = []
     capacidad=0
     def imprimir(self):
         print("su tipo de carga es : " , self.tipo_carga)
@@ -27,20 +28,27 @@ class contenedor:
         print("su masa es : ",self.masa)
         print("su tamaño es : " ,self.peso)
         print("su tipo es : " , self.tipo)
+    def tiene_espacio(self):
+        if self.capacidad > 0 :
+            return True
+        else:
+            return False
 
 
 
 
-@dataclass
+
+
 class contenedor_normal(contenedor):
     tipo_carga = "normal"
 
-    if self.tamano == "grande":
-        capacidad=24
-    elif self.tamano == "pequeño":
-        capacidad=12  
+    def __post_init__(self):
+        if self.tamano == "grande":
+            capacidad=24
+        elif self.tamano == "pequeño":
+            capacidad=12  
 
-@dataclass
+
 class contenedor_refrigerado(contenedor):
     tipo_carga="refrigerada"
 
@@ -49,7 +57,7 @@ class contenedor_refrigerado(contenedor):
     elif self.tamano == "pequeño":
         capacidad=10  
 
-@dataclass
+
 class contenedor_inflamable(contenedor):
     tipo_carga="inflamable"
 
