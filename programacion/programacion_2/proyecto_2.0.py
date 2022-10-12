@@ -119,7 +119,6 @@ def pasoelmaximo(produr,maximo):
             lisa.append(producto(produr.id_producto,produr.nombre,produr.tipo,
             produr.masa,produr.peso))
             produr.quitarpeso(produr.peso)
-    
     return lisa
 
 def maxdeconte(produ,maxi):
@@ -144,6 +143,7 @@ def creatonte(produkl,tama):
 def maximosdeproductos(productoss):
     lispro=[]
     for p in productoss:
+        
         if p.tipo == "normal":
             if p.peso > 24 :
                 k = pasoelmaximo(p, 24)
@@ -165,14 +165,15 @@ def maximosdeproductos(productoss):
                     lispro.append(lk)
             else : 
                 lispro.append(p)
+    
     return lispro
 def meter_productos(productos):
-    ok = True
+    
     lista_contenedores=[]
     productos = maximosdeproductos(productos)
     for producto2 in productos:
+        oscar = True
         if producto2.tipo=="normal":
-            
             if len(lista_contenedores)==0:
                 if producto2.masa == "solida":
                     if producto2.peso <= 24 and producto2.peso > 12:
@@ -197,107 +198,106 @@ def meter_productos(productos):
                         conte_momentanio.con_producto(producto2)
                         lista_contenedores.append(conte_momentanio)
             elif len(lista_contenedores) > 0 : 
-                if (ok):
-                    
                     for cont in lista_contenedores:
                         if cont.tipo_carga == 'normal':
                             if cont.tiene_espacio() :
-                                print(producto2)
                                 if producto2.masa == cont.masa:
-                                    ok = False 
                                     if cont.capacidad >= producto2.peso:
                                         cont.con_producto(producto2)
+                                        oscar = False
+                                        break
                                     else :
                                         wakanda = maxdeconte(producto2, cont.capacidad)
                                         cont.con_producto(wakanda[0])
                                         productos.append(wakanda[1])
-                else : 
-                    
-                    if producto2.masa == 'solida':
-                        if producto2.peso <= 24 and producto2.peso > 12:
-                            conte_momentanio = contenedor_normal(producto2.masa,'contenedor',"grande")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                        elif producto2.peso <= 12 and producto2.peso > 0:
-                            conte_momentanio = contenedor_normal(producto2.masa,'contenedor',"pequeño")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                    elif producto2.masa == 'liquida' or producto2.masa == 'gas':
-                        if producto2.peso <= 24 and producto2.peso > 12:
-                            conte_momentanio = contenedor_normal(producto2.masa,'estanque',"grande")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                        elif producto2.peso <= 12 and producto2.peso > 0:
-                            conte_momentanio = contenedor_normal(producto2.masa,'estanque',"pequeño")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
+                                        oscar = False
+                                        break
+                    if oscar :
+                        if producto2.masa == 'solida':
+                            if producto2.peso <= 24 and producto2.peso > 12:
+                                conte_momentanio = contenedor_normal(producto2.masa,'contenedor',"grande")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                            elif producto2.peso <= 12 and producto2.peso > 0:
+                                conte_momentanio = contenedor_normal(producto2.masa,'contenedor',"pequeño")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                        elif producto2.masa == 'liquida' or producto2.masa == 'gas':
+                            if producto2.peso <= 24 and producto2.peso > 12:
+                                conte_momentanio = contenedor_normal(producto2.masa,'estanque',"grande")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                            elif producto2.peso <= 12 and producto2.peso > 0:
+                                conte_momentanio = contenedor_normal(producto2.masa,'estanque',"pequeño")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
         elif producto2.tipo == 'refrigerado':
-            ok = True
             if len(lista_contenedores)==0:
                 if producto2.masa == "solida":
                     if producto2.peso <= 20 and producto2.peso > 10:
-                        conte_momentanio = contenedor_refrigerada(producto2.masa,'contenedor',"grande")
+                        conte_momentanio = contenedor_refrigerado(producto2.masa,'contenedor',"grande")
                         conte_momentanio.tamano_contenedor()
                         conte_momentanio.con_producto(producto2)
                         lista_contenedores.append(conte_momentanio)
                     elif producto2.peso <= 10 and producto2.peso > 0:
-                        conte_momentanio = contenedor_refrigerada(producto2.masa,'contenedor',"pequeño")
+                        conte_momentanio = contenedor_refrigerado(producto2.masa,'contenedor',"pequeño")
                         conte_momentanio.tamano_contenedor()
                         conte_momentanio.con_producto(producto2)
                         lista_contenedores.append(conte_momentanio)
                 elif producto2.masa == 'liquida' or producto2.masa == 'gas':
                     if producto2.peso <= 20 and producto2.peso > 10:
-                        conte_momentanio = contenedor_refrigerada(producto2.masa,'estanque',"grande")
+                        conte_momentanio = contenedor_refrigerado(producto2.masa,'estanque',"grande")
                         conte_momentanio.tamano_contenedor()
                         conte_momentanio.con_producto(producto2)
                         lista_contenedores.append(conte_momentanio)
                     elif producto2.peso <= 10 and producto2.peso > 0:
-                        conte_momentanio = contenedor_refrigerada(producto2.masa,'estanque',"pequeño")
+                        conte_momentanio = contenedor_refrigerado(producto2.masa,'estanque',"pequeño")
                         conte_momentanio.tamano_contenedor()
                         conte_momentanio.con_producto(producto2)
                         lista_contenedores.append(conte_momentanio)
             elif len(lista_contenedores) > 0 : 
-                if (ok):
                     for cont in lista_contenedores:
                         if cont.tipo_carga == 'refrigerada':
                             if cont.tiene_espacio() :
                                 if producto2.masa == cont.masa:
-                                    ok = False 
                                     if cont.capacidad >= producto2.peso:
                                         cont.con_producto(producto2)
+                                        oscar = False
+                                        break
                                     else :
                                         wakanda = maxdeconte(producto2, cont.capacidad)
                                         cont.con_producto(wakanda[0])
                                         productos.append(wakanda[1])
-                else : 
-                    if producto2.masa == 'solida':
-                        if producto2.peso <= 20 and producto2.peso > 10:
-                            conte_momentanio = contenedor_refrigerada(producto2.masa,'contenedor',"grande")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                        elif producto2.peso <= 10 and producto2.peso > 0:
-                            conte_momentanio = contenedor_refrigerada(producto2.masa,'contenedor',"pequeño")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                    elif producto2.masa == 'liquida' or producto2.masa == 'gas':
-                        if producto2.peso <= 20 and producto2.peso > 10:
-                            conte_momentanio = contenedor_refrigerada(producto2.masa,'estanque',"grande")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                        elif producto2.peso <= 10 and producto2.peso > 0:
-                            conte_momentanio = contenedor_refrigerada(producto2.masa,'estanque',"pequeño")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
+                                        oscar = False
+                                        break
+                    if oscar : 
+                        if producto2.masa == 'solida':
+                            if producto2.peso <= 20 and producto2.peso > 10:
+                                conte_momentanio = contenedor_refrigerado(producto2.masa,'contenedor',"grande")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                            elif producto2.peso <= 10 and producto2.peso > 0:
+                                conte_momentanio = contenedor_refrigerado(producto2.masa,'contenedor',"pequeño")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                        elif producto2.masa == 'liquida' or producto2.masa == 'gas':
+                            if producto2.peso <= 20 and producto2.peso > 10:
+                                conte_momentanio = contenedor_refrigerado(producto2.masa,'estanque',"grande")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                            elif producto2.peso <= 10 and producto2.peso > 0:
+                                conte_momentanio = contenedor_refrigerado(producto2.masa,'estanque',"pequeño")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
         elif producto2.tipo == 'inflamable':
-            ok = True
             if len(lista_contenedores)==0:
                 if producto2.masa == "solida":
                     if producto2.peso <= 22 and producto2.peso > 11:
@@ -322,42 +322,44 @@ def meter_productos(productos):
                         conte_momentanio.con_producto(producto2)
                         lista_contenedores.append(conte_momentanio)
             elif len(lista_contenedores) > 0 : 
-                if (ok):
                     for cont in lista_contenedores:
                         if cont.tipo_carga == 'inflamable':
                             if cont.tiene_espacio() :
                                 if producto2.masa == cont.masa:
-                                    ok = False 
                                     if cont.capacidad >= producto2.peso:
                                         cont.con_producto(producto2)
+                                        oscar = False
+                                        break
                                     else :
                                         wakanda = maxdeconte(producto2, cont.capacidad)
                                         cont.con_producto(wakanda[0])
                                         productos.append(wakanda[1])
-                else : 
-                    if producto2.masa == 'solida':
-                        if producto2.peso <= 22 and producto2.peso > 11:
-                            conte_momentanio = contenedor_inflamable(producto2.masa,'contenedor',"grande")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                        elif producto2.peso <= 11 and producto2.peso > 0:
-                            conte_momentanio = contenedor_inflamable(producto2.masa,'contenedor',"pequeño")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                    elif producto2.masa == 'liquida' or producto2.masa == 'gas':
-                        if producto2.peso <= 22 and producto2.peso > 11:
-                            conte_momentanio = contenedor_inflamable(producto2.masa,'estanque',"grande")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-                        elif producto2.peso <= 11 and producto2.peso > 0:
-                            conte_momentanio = contenedor_inflamable(producto2.masa,'estanque',"pequeño")
-                            conte_momentanio.tamano_contenedor()
-                            conte_momentanio.con_producto(producto2)
-                            lista_contenedores.append(conte_momentanio)
-    print(lista_contenedores)
+                                        oscar = False
+                                        break
+                                
+                    if oscar :
+                        if producto2.masa == 'solida':
+                            if producto2.peso <= 22 and producto2.peso > 11:
+                                conte_momentanio = contenedor_inflamable(producto2.masa,'contenedor',"grande")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                            elif producto2.peso <= 11 and producto2.peso > 0:
+                                conte_momentanio = contenedor_inflamable(producto2.masa,'contenedor',"pequeño")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                        elif producto2.masa == 'liquida' or producto2.masa == 'gas':
+                            if producto2.peso <= 22 and producto2.peso > 11:
+                                conte_momentanio = contenedor_inflamable(producto2.masa,'estanque',"grande")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
+                            elif producto2.peso <= 11 and producto2.peso > 0:
+                                conte_momentanio = contenedor_inflamable(producto2.masa,'estanque',"pequeño")
+                                conte_momentanio.tamano_contenedor()
+                                conte_momentanio.con_producto(producto2)
+                                lista_contenedores.append(conte_momentanio)
     return lista_contenedores
 
 
