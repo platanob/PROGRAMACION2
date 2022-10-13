@@ -3,7 +3,76 @@ from dataclasses import dataclass
 
 @dataclass
 class vehiculo:
-    nombre : str
+    nombre = ''
+    costo = 0
+    capacidad = 0
+    l_contenedores = []
+    peso = 0
+
+    def meter_contenedores(self,losconte):
+        ol = []
+        if losconte == None:
+            return []
+        elif len(losconte) == 1:
+            ol.append(losconte[0])
+        else :
+            for conte in losconte:
+                if self.capacidad > 0 :
+                    if self.capacidad > 1:
+                        self.l_contenedores.append(conte)
+                        ol.append(conte)
+                        if conte.tamano == "grande" :
+                            self.capacidad -= 1
+                        elif conte.tamano == "pequeño":
+                            self.capacidad -= 0.5
+                    elif self.capacidad == 0.5:
+                        self.l_contenedores.append(conte)
+                        ol.append(conte)
+                        self.capacidad -= 0.5
+        return ol
+    def imprimir(self):
+        print('su nombre es  : ',self.nombre)
+        print('su costo es de : ' ,self.costo)
+        print('su capacidad es de : ', self.capacidad)
+        print('su peso es de  : ', self.peso)
+        print('sus contenedores son : ', self.l_contenedores)
+
+
+    def sacarpeso(self):
+        l = 0
+        for k in self.l_contenedores:
+            l +=k.peso
+        self.peso = l
+    def tiene_espacio(self):
+        if self.capacidad > 0 :
+            return True
+        else:
+            return False
+class camion(vehiculo):
+    nombre:str = "avion"
+    costo:int = 500000
+    capacidad:int = 1
+    l_contenedores = []
+
+class avion(vehiculo):
+    nombre:str  = 'avion'
+    costo:int = 1000000
+    capacidad:int = 10
+    l_contenedores = []
+
+class tren(vehiculo):
+    nombre:str = 'tren'
+    costo = 10000000
+    capacidad = 250
+    l_contenedores = []
+
+class barco(vehiculo):
+    nombre = 'barco'
+    costo = 1000000000
+    capacidad = 24000
+    l_contenedores = []
+
+
 
 @dataclass
 class producto:
@@ -93,8 +162,6 @@ class contenedor_inflamable(contenedor):
 
 
 
-
-
 def datos(archivo):
     datos =[]
     with open(archivo , 'r') as fichero:
@@ -123,16 +190,21 @@ def pasoelmaximo(produr,maximo):
 
 def maxdeconte(produ,maxi):
     li = []
-
     li.append(producto(produ.id_producto, produ.nombre, produ.tipo,
     produ.masa, maxi))
     k = produ.peso-maxi
     li.append(producto(produ.id_producto, produ.nombre, produ.tipo,
     produ.masa, k))
     return li
-
-
-
+def sacarcontenedores(nume,liscon):
+    loscontenedores = []
+    k = len(liscon)
+    for con in liscon :
+        loscontenedores.append(con)
+        nume -= 1
+        k -= 1
+        if nume <= 0 or k <= 0:
+            return loscontenedores
 def creatonte(produkl,tama):
     if produkl.masa == 'solida':
         conte_momentanio = contenedor_normal(produkl.masa,'contenedor',tama)
@@ -362,11 +434,79 @@ def meter_productos(productos):
                                 lista_contenedores.append(conte_momentanio)
     return lista_contenedores
 
+def separa_conte(contenedores):
+    contenedores_grandes = []
+    contenedores_pequeños = []
+    for hola in contenedores:
+        if hola.tamano == 'grande':
+            contenedores_grandes.append(hola)
+        else:
+            contenedores_pequeños.append(hola) 
+
+    return contenedores_grandes , contenedores_pequeños
 
 
+def veiculo_mete(contenedores):
+    lis_veiculos = []
+    
+    c_g , c_p =separa_conte(contenedores)
+    tamaño = len(c_g) + (len(c_p)/2)
+    while tamaño > 0 :
+        elimina = []
+        if tamaño <= 2:
+            conetes = sacarcontenedores(2, c_p)
+            conetes2 = sacarcontenedores(1, c_g)
+            ve = camion()
 
+            elimina = ve.meter_contenedores(conetes)
+            for kaka in elimina:
+                c_p.remove(kaka)
+            
+            elimina = ve.meter_contenedores(conetes2)
+            for kaka in elimina:
+                c_g.remove(kaka)
+            lis_veiculos.append(ve)
+        elif tamaño > 2 and tamaño <= 100:
+            conetes = []
+            conetes = sacarcontenedores(20, c_p)
+            conetes2 = sacarcontenedores(10, c_g)
+            ve = avion()
+            elimina = ve.meter_contenedores(conetes)
+            for kaka in elimina:
+                c_p.remove(kaka)
+            elimina = ve.meter_contenedores(conetes2)
+            for kaka in elimina:
+                c_g.remove(kaka)
+            lis_veiculos.append(ve)
+        elif tamaño > 100 and tamaño <24000 :
+            conetes = []
+            conetes = sacarcontenedores(500, c_p)
+            conetes2 = sacarcontenedores(250, c_g)
+            ve = tren()
+            elimina = ve.meter_contenedores(conetes)
+            for kaka in elimina:
+                c_p.remove(kaka)
+            elimina = ve.meter_contenedores(conetes2)
+            for kaka in elimina:
+                c_g.remove(kaka)
+            lis_veiculos.append(ve)
+        elif tamaño >= 24000 :
+            conetes = []
+            conetes = sacarcontenedores(48000, c_p)
+            conetes2 = sacarcontenedores(24000, c_g)
+            ve = barco()
+            elimina = ve.meter_contenedores(conetes)
+            for kaka in elimina:
+                c_p.remove(kaka)
+            elimina = ve.meter_contenedores(conetes2)
+            for kaka in elimina:
+                c_g.remove(kaka)
+            lis_veiculos.append(ve)
+        tamaño = len(c_g) + (len(c_p)/2)
 
-
+    for pesoss in lis_veiculos:
+        pesoss.sacarpeso()
+    return lis_veiculos
 
 
 
@@ -388,10 +528,11 @@ for k in lista_productos:
 
 lista_con = meter_productos(lista_productos)
 
-for on in lista_con:
-    on.imprimir()
 
 
+lista_vehiculos = veiculo_mete(lista_con)
+for vei in lista_vehiculos:
+    vei.imprimir()
 """ j = producto(2, 'papas', 'normal', 'solido', 22)
 k = producto(6, 'berengena', 'normal', 'solido', 5)
 kl = []

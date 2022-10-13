@@ -237,6 +237,7 @@ def leerarchivo(archivo):
     fichero.close()
     return datos
 
+
 def contadorvei(listavei):
     contavion = 0
     conttren = 0
@@ -391,6 +392,7 @@ def graficocan(lista):
         numda+=1
         n +=1
     plot.show()
+
 
 
 #cambiar el nombre del archivo de ser necesario
