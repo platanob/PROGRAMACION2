@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import pygame as py
+import pymysql
 
 
 @dataclass
@@ -513,12 +514,24 @@ def veiculo_mete(contenedores):
         pesoss.sacarpeso()
     return lis_veiculos
 
+''' conectar a la base de datos'''
+def base():
+    conec = pymysql.connect(host="db.inf.uct.cl",user="A2022_bcarrasco",password="A2022_bcarrasco",db="A2022_bcarrasco")
+    cursor = conec.cursor()
+    return cursor
 
-
-
-
+def crear_tabla(cursor,datos):
+    sql = """CREATE TABLE  productos(id_producto INT, nombre_producto VARCHAR(30),tipo Varchar(20),masa varchar(20),peso int)"""
+    cursor.execute(sql)
+    caca = 1
+    for da in datos :
+        curosor.execute("""INSERT productos(id_producto,nombre_producto,tipo,masa,peso)
+                        VALUES (+da[0]+,+da[1]+,+da[2]+,+da[3]+,+da[4]+)""")
 
 productos =datos("ejemplo_lista.csv")
+curosor = base()
+crear_tabla(curosor, productos)
+
 
 
 lista_productos=[]
@@ -682,6 +695,10 @@ im_camion = py.transform.scale(py.image.load("camion.jpg"),(250,250))
 im_avion = py.transform.scale(py.image.load('avion.jpg'),(250,250))
 im_tren = py.transform.scale(py.image.load('tre.jpg'),(250,250))
 im_barco = py.transform.scale(py.image.load('barco.jpg'),(250,250))
+
+
+
+
 
 while True :
     for ev in py.event.get():
