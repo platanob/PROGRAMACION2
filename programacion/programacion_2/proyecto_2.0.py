@@ -410,7 +410,6 @@ def meter_productos(productos):
                                         productos.append(wakanda[1])
                                         oscar = False
                                         break
-                                
                     if oscar :
                         if producto2.masa == 'solida':
                             if producto2.peso <= 22 and producto2.peso > 11:
@@ -447,6 +446,13 @@ def separa_conte(contenedores):
 
     return contenedores_grandes , contenedores_pequeños
 
+"""funcion para sacar la cantidad de contenedores que tiene que llevar cada vehiculo segun el precio"""
+def  mejoropcionvei(precios):
+    camion = precios[0]
+    avion = precios[1]
+    tren = precios[2]
+    barco = precios[3]
+    
 
 def veiculo_mete(contenedores):
     lis_veiculos = []
@@ -515,22 +521,39 @@ def veiculo_mete(contenedores):
     return lis_veiculos
 
 ''' conectar a la base de datos'''
-def base():
-    conec = pymysql.connect(host="db.inf.uct.cl",user="A2022_bcarrasco",password="A2022_bcarrasco",db="A2022_bcarrasco")
-    cursor = conec.cursor()
-    return cursor
 
-def crear_tabla(cursor,datos):
-    sql = """CREATE TABLE  productos(id_producto INT, nombre_producto VARCHAR(30),tipo Varchar(20),masa varchar(20),peso int)"""
-    cursor.execute(sql)
-    caca = 1
-    for da in datos :
-        curosor.execute("""INSERT productos(id_producto,nombre_producto,tipo,masa,peso)
-                        VALUES (+da[0]+,+da[1]+,+da[2]+,+da[3]+,+da[4]+)""")
+def crear_tabla(datoss):
+    try:
+        conec = pymysql.connect(host="db.inf.uct.cl",user="A2022_bcarrasco",password="A2022_bcarrasco",db="A2022_bcarrasco")
+        cursor = conec.cursor()
+        for da in datoss :
+            sql = """INSERT INTO productos_py (id_producto, nombre_producto, tipo, masa,peso) VALUES (%s,%s,%s,%s,%s)"""           
+            vals = (da[0], da[1], da[2], da[3], da[4])
+            cursor.execute(sql, vals)
+        conec.commit()
+    except conec.Error as error:
+        print(error)
+    finally:
+        cursor.close()
 
-productos =datos("ejemplo_lista.csv")
-curosor = base()
-crear_tabla(curosor, productos)
+def sacardatos():
+    try:
+        conec = pymysql.connect(host="db.inf.uct.cl",user="A2022_bcarrasco",password="A2022_bcarrasco",db="A2022_bcarrasco")
+        cursor = conec.cursor()
+        sql = """SELECT *  from productos_py """
+        cursor.execute(sql)
+    except conec.Error as error:
+        print(error)
+    finally:
+        resultado = cursor.fetchall()
+        return resultado
+
+
+
+a = sacardatos()
+print (a)
+productos = a
+
 
 
 
@@ -538,7 +561,7 @@ lista_productos=[]
 
 
 for pro in productos:
-    lista_productos.append(producto(int(pro[0]),pro[1],pro[2],pro[3],float(pro[4])))
+    lista_productos.append(producto(int(pro[0]),str(pro[1]),str(pro[2]),str(pro[3]),float(pro[4])))
 
 for k in lista_productos:
     k.toneladas()
@@ -596,6 +619,17 @@ def contipovei(lisve):
 def mostrar():
     smallfont = py.font.SysFont('Corbel',30) 
     pantalla.blit(smallfont.render('digite el numero del vehiculo',True,blanco ), (100,100))
+    pantalla.blit(txt_surface, (input_box.x+5, input_box.y+5))
+    py.draw.rect(pantalla, color, input_box, 2)
+
+
+
+def preciovei():
+    nombrev = ['camion','avion','tren','barco']
+    smallfont = py.font.SysFont('Corbel',30) 
+    pantalla.blit(smallfont.render('digite el precio del '+ nombrev[nnombrev],True,blanco ), (100,100))
+    pantalla.blit(txt_surface, (input_box.x+5, input_box.y+5))
+    py.draw.rect(pantalla, color, input_box, 2)
 
 def mosdavei(num , lisve ):
     try:
@@ -658,6 +692,11 @@ def mosdavei(num , lisve ):
         py.time.wait(3000)
         o = 3 
     except : 
+        pantalla.fill(negro)
+        smallfont2 = py.font.SysFont('Corbel',50) 
+        pantalla.blit(smallfont2.render(('numero no encontrado'),True,rojo ), (20,160))
+        py.display.update()
+        py.time.wait(3000)
         o = 3
 def ptrans(lisve):
     pt = 0
@@ -690,7 +729,7 @@ blanco = (255,255,255)
 amarrilo = (255,255,0)
 rojo = (255,0,0)
 numero = 0
-o = 0
+o = 6
 im_camion = py.transform.scale(py.image.load("camion.jpg"),(250,250))
 im_avion = py.transform.scale(py.image.load('avion.jpg'),(250,250))
 im_tren = py.transform.scale(py.image.load('tre.jpg'),(250,250))
@@ -698,11 +737,25 @@ im_barco = py.transform.scale(py.image.load('barco.jpg'),(250,250))
 
 
 
-
+input_box = py.Rect(100, 200, 140, 32)
+color_inactive = py.Color('lightskyblue3')
+color_active = py.Color('dodgerblue2')
+reloj = py.time.Clock()
+color = color_inactive
+text = ''
+active = False
+font = py.font.Font(None, 32)
+nnombrev = 0
+precioveiculos= []
 
 while True :
     for ev in py.event.get():
-
+        if ev.type == py.MOUSEBUTTONDOWN:
+            if input_box.collidepoint(ev.pos):
+                active = not active
+            else:
+                active = False
+            color = color_active if active else color_inactive
         if ev.type == py.QUIT:
             py.quit()
         if ev.type == py.KEYDOWN:
@@ -710,51 +763,66 @@ while True :
                 if o == 0:
                     o = 1
                 elif o == 3 :
-                    o= 6
                     numero = 1
             if ev.key == py.K_2 :
                 if o == 0:
                     o = 2
                 elif o == 3 :
-                    o= 6
                     numero = 2
             if ev.key == py.K_3:
                 if o == 0 :
                     o= 3
                 elif o == 3 :
-                    o= 6
                     numero = 3
             if ev.key == py.K_4:
                 if o == 0:
                     o = 4
                 elif o == 3 :
-                    o= 6
                     numero = 4
             if ev.key == py.K_5:
                 if o == 0:
                     py.quit()
                 if o == 3 :
-                    o= 6
                     numero = 5
             if ev.key == py.K_6:
                 if o == 3 :
-                    o= 6
                     numero = 6
             if ev.key == py.K_7:
                 if o == 3 :
-                    o= 6
                     numero = 7
             if ev.key == py.K_8:
                 if o == 3 :
-                    o= 6
                     numero = 8
             if ev.key == py.K_9:
                 if o == 3 :
-                    o= 6
                     numero = 9
             if ev.key == py.K_ESCAPE:
                     o=0
+            if active:
+                if ev.key == py.K_RETURN:
+                    if o == 3:
+                        print(text)
+                        text = int(text)
+                        mosdavei(text, lista_vehiculos)
+                        text = ''
+                    elif o == 6:
+                        print(text)
+                        precioveiculos.append(int(text))
+                        text = ''
+                        if nnombrev < 3 :
+                            nnombrev += 1
+                        else :
+                            o = 0
+                            mejoropcionvei(precioveiculos)
+                elif ev.key == py.K_BACKSPACE:
+                    text = text[:-1]
+                else:
+                    text += ev.unicode
 
+
+    txt_surface = font.render(text, True, color)
+    width = max(200, txt_surface.get_width()+10)
+    input_box.w = width
     pantalla.fill(negro)
     if o == 0 :
         botones()
@@ -767,7 +835,8 @@ while True :
     elif o == 4:
         ptrans(lista_vehiculos)
     elif o == 6 :
-        mosdavei(numero, lista_vehiculos)
-    py.display.update()
+        preciovei()
+    py.display.flip()
+    reloj.tick(60)
 
 
