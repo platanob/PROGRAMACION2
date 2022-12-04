@@ -242,7 +242,6 @@ def maximosdeproductos(productoss):
     
     return lispro
 def meter_productos(productos):
-    
     lista_contenedores=[]
     productos = maximosdeproductos(productos)
     for producto2 in productos:
@@ -447,21 +446,21 @@ def separa_conte(contenedores):
     return contenedores_grandes , contenedores_pequeños
 
 """funcion para sacar la cantidad de contenedores que tiene que llevar cada vehiculo segun el precio"""
-def  mejoropcionvei(precios):
-    camion = precios[0]
-    avion = precios[1]
-    tren = precios[2]
-    barco = precios[3]
-    
+def  mejoropcionvei(precios,lcon):
+    n = [0,0,0,0]
+    for o in range(len(precios) - 1 ):
+        while (precios[o] * n[o] < precios[o+1]):
+            n[o] += 1
+        n[o] -= 1
+    return veiculo_mete(lcon,n)
 
-def veiculo_mete(contenedores):
+def veiculo_mete(contenedores,pre):
     lis_veiculos = []
-    
     c_g , c_p =separa_conte(contenedores)
     tamaño = len(c_g) + (len(c_p)/2)
     while tamaño > 0 :
         elimina = []
-        if tamaño <= 2:
+        if tamaño <= 1*pre[0]:
             conetes = sacarcontenedores(2, c_p)
             conetes2 = sacarcontenedores(1, c_g)
             ve = camion()
@@ -472,7 +471,7 @@ def veiculo_mete(contenedores):
             for kaka in elimina:
                 c_g.remove(kaka)
             lis_veiculos.append(ve)
-        elif tamaño > 2 and tamaño <= 100:
+        elif tamaño > 1*pre[0] and tamaño <= 10*pre[1]:
             conetes = []
             conetes = sacarcontenedores(20, c_p)
             conetes2 = sacarcontenedores(10, c_g)
@@ -484,7 +483,7 @@ def veiculo_mete(contenedores):
             for kaka in elimina:
                 c_g.remove(kaka)
             lis_veiculos.append(ve)
-        elif tamaño > 100 and tamaño <24000 :
+        elif tamaño > 10*pre[1] and tamaño < 250*pre[2] :
             conetes = []
             conetes = sacarcontenedores(500, c_p)
             conetes2 = sacarcontenedores(250, c_g)
@@ -496,7 +495,7 @@ def veiculo_mete(contenedores):
             for kaka in elimina:
                 c_g.remove(kaka)
             lis_veiculos.append(ve)
-        elif tamaño >= 24000 :
+        elif tamaño >= 250*pre[2] :
             conetes = []
             conetes = sacarcontenedores(48000, c_p)
             conetes2 = sacarcontenedores(24000, c_g)
@@ -514,7 +513,8 @@ def veiculo_mete(contenedores):
             tamaño = len(c_p)/2
         elif c_p == None:
             tamaño = len(c_g)
-        tamaño = len(c_g) + (len(c_p)/2)
+        else:
+            tamaño = len(c_g) + (len(c_p)/2)
 
     for pesoss in lis_veiculos:
         pesoss.sacarpeso()
@@ -549,10 +549,11 @@ def sacardatos():
         return resultado
 
 
+""" crear_tabla(datos("MOCK_DATA.csv")) """
 
-a = sacardatos()
-print (a)
-productos = a
+
+productos = sacardatos()
+
 
 
 
@@ -569,10 +570,10 @@ for k in lista_productos:
 
 lista_con = meter_productos(lista_productos)
 
-lista_vehiculos = veiculo_mete(lista_con)
 
-for vei in lista_vehiculos:
-    vei.imprimir()
+
+"""for vei in lista_vehiculos:
+    vei.imprimir()"""
 
 
 
@@ -762,40 +763,19 @@ while True :
             if ev.key == py.K_1:
                 if o == 0:
                     o = 1
-                elif o == 3 :
-                    numero = 1
             if ev.key == py.K_2 :
                 if o == 0:
                     o = 2
-                elif o == 3 :
-                    numero = 2
             if ev.key == py.K_3:
                 if o == 0 :
                     o= 3
-                elif o == 3 :
-                    numero = 3
+                    text = ""
             if ev.key == py.K_4:
                 if o == 0:
                     o = 4
-                elif o == 3 :
-                    numero = 4
             if ev.key == py.K_5:
                 if o == 0:
                     py.quit()
-                if o == 3 :
-                    numero = 5
-            if ev.key == py.K_6:
-                if o == 3 :
-                    numero = 6
-            if ev.key == py.K_7:
-                if o == 3 :
-                    numero = 7
-            if ev.key == py.K_8:
-                if o == 3 :
-                    numero = 8
-            if ev.key == py.K_9:
-                if o == 3 :
-                    numero = 9
             if ev.key == py.K_ESCAPE:
                     o=0
             if active:
@@ -813,7 +793,7 @@ while True :
                             nnombrev += 1
                         else :
                             o = 0
-                            mejoropcionvei(precioveiculos)
+                            lista_vehiculos = mejoropcionvei(precioveiculos,lista_con)
                 elif ev.key == py.K_BACKSPACE:
                     text = text[:-1]
                 else:
@@ -838,5 +818,3 @@ while True :
         preciovei()
     py.display.flip()
     reloj.tick(60)
-
-
